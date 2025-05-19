@@ -2,9 +2,10 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Formulaire FONME</title>
-
-  <!-- Librairies pour génération PDF et capture image -->
+  
+  <!-- Librairies PDF & capture -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/backendless@7.0.5/dist/backendless.min.js"></script>
@@ -15,54 +16,47 @@
       50% { opacity: 0; }
     }
 
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-
     body {
       background: white;
       margin: 0;
-      padding: 30px;
+      padding: 10px;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      font-family: Arial, sans-serif;
     }
 
     .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      width: 100%;
+      max-width: 1000px;
       border: 4px solid #87CEEB;
       border-radius: 10px;
       background: white;
-      max-width: 1000px;
-      width: 100%;
-      display: flex;
-      gap: 20px;
       padding: 20px;
+      box-sizing: border-box;
     }
 
     .photo-preview, .logo {
-      flex: 1;
+      flex: 1 1 100%;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      padding-top: 10px;
+      align-items: center;
+    }
+
+    form {
+      flex: 1 1 100%;
     }
 
     #photoPreview, #logoImage {
       max-width: 100%;
-      max-height: 300px;
+      height: auto;
       border-radius: 8px;
       border: 2px solid #87CEEB;
       object-fit: contain;
-    }
-
-    #photoPreview {
-      display: none;
-    }
-
-    form {
-      flex: 2;
     }
 
     h2 {
@@ -137,16 +131,30 @@
       cursor: pointer;
       text-decoration: underline;
     }
+
+    @media (min-width: 768px) {
+      .photo-preview {
+        flex: 1;
+        align-items: flex-start;
+      }
+
+      form {
+        flex: 2;
+      }
+
+      .logo {
+        flex: 1;
+        align-items: flex-start;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Zone gauche : photo -->
     <div class="photo-preview">
-      <img id="photoPreview" alt="Aperçu de la photo" />
+      <img id="photoPreview" alt="Aperçu de la photo" style="display: none;" />
     </div>
 
-    <!-- Formulaire -->
     <form id="contactForm">
       <h2><span class="clignote">FORMULAIRE</span> DE LA FONME</h2>
 
@@ -166,11 +174,15 @@
         <option value="Membre d'honneur">Membre d'honneur</option>
       </select>
 
+      <label for="genre">Genre</label>
+      <select id="genre" name="Genre" required>
+        <option value="">-- Choisir un genre --</option>
+        <option value="Masculin">Masculin</option>
+        <option value="Féminin">Féminin</option>
+      </select>
+
       <label for="photo">Photo</label>
       <input type="file" id="photo" name="Photo" accept="image/*" />
-
-      <label for="message">Message</label>
-      <textarea id="message" name="Message" rows="5" required></textarea>
 
       <input type="submit" value="Envoyer" id="submit" />
 
@@ -178,7 +190,6 @@
       <a id="downloadLink" download="formulaire_fonme.pdf">📄 Télécharger le formulaire en PDF</a>
     </form>
 
-    <!-- Zone droite : logo -->
     <div class="logo">
       <img id="logoImage" src="logo.png" alt="Logo FONME" />
     </div>
@@ -218,7 +229,7 @@
       const adresse = document.getElementById("adresse").value;
       const telephone = document.getElementById("telephone").value;
       const statut = document.getElementById("statut").value;
-      const message = document.getElementById("message").value;
+      const genre = document.getElementById("genre").value;
 
       let photoURL = "";
 
@@ -228,7 +239,7 @@
           const uploadResult = await Backendless.Files.upload(file, "photos/", true);
           photoURL = uploadResult.fileURL;
         } catch (err) {
-          confirmation.textContent = "❌ Erreur lors du téléchargement de la photo : " + err.message;
+          confirmation.textContent = "❌ Erreur photo : " + err.message;
           confirmation.className = "error";
           confirmation.style.display = "block";
           return;
@@ -240,7 +251,7 @@
         Adresse: adresse,
         Téléphone: telephone,
         Statut: statut,
-        Message: message,
+        Genre: genre,
         Photo: photoURL,
       };
 
@@ -264,10 +275,7 @@
           doc.text(`Adresse : ${adresse}`, 20, 50);
           doc.text(`Téléphone : ${telephone}`, 20, 60);
           doc.text(`Statut : ${statut}`, 20, 70);
-          doc.text("Message :", 20, 80);
-
-          const messageLines = doc.splitTextToSize(message, 170);
-          doc.text(messageLines, 20, 90);
+          doc.text(`Genre : ${genre}`, 20, 80);
 
           if (photoPreview.src && photoPreview.style.display !== "none") {
             const canvas = await html2canvas(photoPreview);
@@ -284,7 +292,7 @@
           photoPreview.style.display = "none";
         })
         .catch((error) => {
-          confirmation.textContent = "❌ Erreur lors de l'envoi : " + error.message;
+          confirmation.textContent = "❌ Erreur : " + error.message;
           confirmation.className = "error";
           confirmation.style.display = "block";
         });
