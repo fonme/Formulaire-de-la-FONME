@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <title>Formulaire FONME</title>
-  
+
   <!-- Librairies pour génération PDF et capture image -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-  
   <script src="https://cdn.jsdelivr.net/npm/backendless@7.0.5/dist/backendless.min.js"></script>
-  
+
   <style>
     @keyframes clignoter {
       0%, 100% { opacity: 1; }
@@ -88,7 +87,7 @@
     }
 
     #submit {
-      background: #87CEEB; /* bleu ciel */
+      background: #87CEEB;
       color: white;
       font-weight: bold;
       cursor: pointer;
@@ -99,7 +98,7 @@
     }
 
     #submit:hover {
-      background: #559edc; /* un bleu un peu plus foncé au survol */
+      background: #559edc;
     }
 
     label {
@@ -154,11 +153,11 @@
       <label for="nom">Nom</label>
       <input type="text" id="nom" name="Nom" required />
 
-      <label for="email">E-mail</label>
-      <input type="email" id="email" name="Email" required />
+      <label for="adresse">Adresse</label>
+      <input type="text" id="adresse" name="Adresse" required />
 
       <label for="telephone">Téléphone</label>
-      <input type="tel" id="telephone" name="Telephone" />
+      <input type="tel" id="telephone" name="Téléphone" />
 
       <label for="statut">Statut</label>
       <select id="statut" name="Statut" required>
@@ -209,7 +208,6 @@
         photoPreview.src = "";
         photoPreview.style.display = "none";
       }
-      // Masquer le lien de téléchargement si nouvelle photo sélectionnée
       downloadLink.style.display = "none";
     });
 
@@ -217,7 +215,7 @@
       e.preventDefault();
 
       const nom = document.getElementById("nom").value;
-      const email = document.getElementById("email").value;
+      const adresse = document.getElementById("adresse").value;
       const telephone = document.getElementById("telephone").value;
       const statut = document.getElementById("statut").value;
       const message = document.getElementById("message").value;
@@ -239,7 +237,7 @@
 
       const data = {
         Nom: nom,
-        "E-mail": email,
+        Adresse: adresse,
         Téléphone: telephone,
         Statut: statut,
         Message: message,
@@ -253,20 +251,17 @@
           confirmation.className = "success";
           confirmation.style.display = "block";
 
-          // Génération du PDF
           const { jsPDF } = window.jspdf;
           const doc = new jsPDF();
 
-          // Titre
           doc.setFontSize(16);
           doc.setTextColor(33, 150, 243);
           doc.text("FORMULAIRE DE LA FONME", 20, 20);
 
-          // Contenu texte
           doc.setFontSize(12);
           doc.setTextColor(0, 0, 0);
           doc.text(`Nom : ${nom}`, 20, 40);
-          doc.text(`Email : ${email}`, 20, 50);
+          doc.text(`Adresse : ${adresse}`, 20, 50);
           doc.text(`Téléphone : ${telephone}`, 20, 60);
           doc.text(`Statut : ${statut}`, 20, 70);
           doc.text("Message :", 20, 80);
@@ -274,20 +269,17 @@
           const messageLines = doc.splitTextToSize(message, 170);
           doc.text(messageLines, 20, 90);
 
-          // Ajouter la photo si disponible
           if (photoPreview.src && photoPreview.style.display !== "none") {
             const canvas = await html2canvas(photoPreview);
             const imgData = canvas.toDataURL("image/png");
             doc.addImage(imgData, 'PNG', 140, 40, 50, 50);
           }
 
-          // Génération du PDF et création du lien de téléchargement
           const pdfBlob = doc.output("blob");
           const url = URL.createObjectURL(pdfBlob);
           downloadLink.href = url;
           downloadLink.style.display = "inline-block";
 
-          // Reset du formulaire (garder la photo affichée pour le PDF donc reset après affichage du lien)
           document.getElementById("contactForm").reset();
           photoPreview.style.display = "none";
         })
