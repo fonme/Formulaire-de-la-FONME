@@ -78,6 +78,34 @@ async function loadAllSections() {
             console.error(`Erreur d'injection pour ${name} :`, error);
         }
     }
+
+    // --- 4. INJECTION DU FOOTER (Après toutes les sections) ---
+    try {
+        const footerResponse = await fetch(`footer/footer.html`);
+        if (footerResponse.ok) {
+            const footerHtml = await footerResponse.text();
+            const footerWrapper = document.createElement('div');
+            footerWrapper.innerHTML = footerHtml;
+            
+            // On l'ajoute directement au body pour qu'il soit tout en bas
+            document.body.appendChild(footerWrapper);
+
+            // CSS du Footer
+            const footerLink = document.createElement('link');
+            footerLink.rel = 'stylesheet';
+            footerLink.href = `footer/footer.css`;
+            document.head.appendChild(footerLink);
+
+            // JS du Footer
+            const footerScript = document.createElement('script');
+            footerScript.src = `footer/footer.js`;
+            document.body.appendChild(footerScript);
+            
+            console.log("Footer injecté avec succès.");
+        }
+    } catch (error) {
+        console.error("Erreur d'injection du Footer :", error);
+    }
 }
 
 // Lancement de l'injection
