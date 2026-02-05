@@ -9,7 +9,7 @@ async function injectFooter() {
             // On charge aussi son CSS s'il n'est pas déjà dans style.css
             const link = document.createElement('link');
             link.rel = 'stylesheet';
-            link.href = 'style.css'; // Ou footer.css si tu sépares
+            link.href = 'footer.css'; // Ou footer.css si tu sépares
             document.head.appendChild(link);
         }
     } catch (error) {
