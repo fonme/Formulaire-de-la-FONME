@@ -1,0 +1,112 @@
+.s2-wrapper {
+    background: #1a1a1a; /* Fond sombre pour faire ressortir les actus */
+    padding: 60px 5%;
+    text-align: center;
+}
+
+.s2-main-title {
+    color: #FFD700;
+    margin-bottom: 40px;
+    font-size: 2rem;
+    text-transform: uppercase;
+}
+
+.s2-news-container {
+    position: relative;
+    max-width: 900px;
+    height: 500px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.s2-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s ease;
+    transform: translateX(100%); /* Départ de la droite */
+}
+
+.s2-slide.active {
+    opacity: 1;
+    transform: translateX(0); /* Arrivée au centre */
+}
+
+.s2-bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Superposition sombre pour lire le texte */
+.s2-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 40px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.9));
+    text-align: left;
+    color: white;
+}
+
+.s2-date {
+    background: #0047AB;
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    margin-bottom: 15px;
+    display: inline-block;
+}
+
+.s2-news-title {
+    font-size: 1.8rem;
+    margin: 10px 0;
+}
+
+.s2-intro {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #ccc;
+}
+
+.s2-read-more {
+    display: inline-block;
+    color: #FFD700;
+    text-decoration: none;
+    font-weight: bold;
+    border-bottom: 2px solid transparent;
+    transition: 0.3s;
+}
+
+.s2-read-more:hover {
+    border-color: #FFD700;
+}
+
+/* Boutons de navigation */
+.s2-controls {
+    margin-top: 20px;
+}
+
+.s2-controls button {
+    background: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.s2-controls button:hover {
+    background: #FFD700;
+    color: #000;
+}
+
+@media (max-width: 768px) {
+    .s2-news-container { height: 400px; }
+    .s2-news-title { font-size: 1.4rem; }
+}
